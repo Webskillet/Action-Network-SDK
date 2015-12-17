@@ -1,4 +1,4 @@
-# Action-Network-SDK
+# Action Network SDK
 
 simple php SDK for Action Network API v. 2  
 Version 1, December 2015
