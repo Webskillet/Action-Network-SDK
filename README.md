@@ -1,11 +1,13 @@
 # Action-Network-SDK
 
-simple php SDK for Action Network API v. 2
+simple php SDK for Action Network API v. 2  
 Version 1, December 2015
 
 author: [Jonathan Kissam](http://jonathankissam.com)
 
 This is not a full SDK for the Action Network API, it is merely intended to allow php-driven websites to push new supporters into a client's Action Network database, to pull lists of __petitions, forms, events and tags__, and to tag supporters and add them to petitions, forms, and events.
+
+## ActionNetwork class
 
 This SDK contains an ActionNetwork class, which creates an Action Network API connection controller.  It has the following methods:
 
@@ -14,6 +16,8 @@ This SDK contains an ActionNetwork class, which creates an Action Network API co
 * __signupPerson__, __recordAttendance__, __recordSignature__ and __recordSubmission__: use Action Network's helper API endpoints to add supporters, and add them to petitions, forms and events.  All of these methods take an Action Network Person (see below), the event/petition/form helpers take the id of the relevant event, petition or form as a second argument, recordSignature takes an optional comment as a third argument, and all of these functions can take an array of tags (which must already exist in the system) as a final argument
 * __getCollection__, __getSimpleCollection__ and __getFullSimpleCollection__: helper functions for dealing with paging
 * __getResourceId__, __getResourceTitle__ and __simplifyCollection__: helper functions for simplifying collections into lists of ids and titles
+
+## ActionNetworkPerson class
 
 The SDK also contains an ActionNetworkPerson class, which creates a well-formed [person object](https://actionnetwork.org/docs/v2/people/) which can be passed to Action Network's API.  There are three methods to instantiate the class:
 
@@ -29,8 +33,7 @@ The SDK also contains an ActionNetworkPerson class, which creates a well-formed 
   * region
   * postal_code
   * country
-
-In addition, any properties or (first-level) array values which are simple strings will be treated as custom fields
+  In addition, any properties or (first-level) array values which are simple strings will be treated as custom fields
 
 The class will enforce receiving a valid email address, but in order to work with the API, it also must receive a postal code.
 
