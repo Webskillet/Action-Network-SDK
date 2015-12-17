@@ -32,7 +32,8 @@ The SDK also contains an ActionNetworkPerson class, which creates a well-formed 
   * locality
   * region
   * postal_code
-  * country  
+  * country
+
 In addition, any properties or (first-level) array values which are simple strings will be treated as custom fields
 
 The class will enforce receiving a valid email address, but in order to work with the API, it also must receive a postal code.
