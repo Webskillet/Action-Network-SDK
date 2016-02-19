@@ -17,7 +17,7 @@ class ActionNetwork {
 		$this->api_key = $api_key;
 	}
 
-	public function call($endpoint, $method = 'GET', $object = null) {
+	public function call($endpoint, $method = 'GET', $object = null, $odata = null) {
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -33,10 +33,20 @@ class ActionNetwork {
 					'Content-Length: ' . strlen($json))
 				);
 			}
+			curl_setopt($ch, CURLOPT_URL, 'https://actionnetwork.org/api/v2/'.$endpoint);
 		} else {
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array('OSDI-API-Token:'.$this->api_key));
+			if ($odata != "") {
+				$request_parameters = array('filter'=>$odata);
+				$request_url = "https://actionnetwork.org/api/v2/".$endpoint;
+				$request_url .= "?".http_build_query($request_parameters);
+				curl_setopt($ch, CURLOPT_URL, $request_url);
+			} else {
+				$request_url = "https://actionnetwork.org/api/v2/".$endpoint;
+				curl_setopt($ch, CURLOPT_URL, $request_url);	
+			}
+				
 		}
-		curl_setopt($ch, CURLOPT_URL, 'https://actionnetwork.org/api/v2/'.$endpoint);
 
 		$response = curl_exec($ch);
 
