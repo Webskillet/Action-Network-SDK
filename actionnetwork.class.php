@@ -42,7 +42,6 @@ class ActionNetwork {
 				$request_url .= "?".http_build_query($request_parameters);
 				curl_setopt($ch, CURLOPT_URL, $request_url);
 			} else {
-				$request_parameters = array('filter'=>$odata);
 				$request_url = "https://actionnetwork.org/api/v2/".$endpoint;
 				curl_setopt($ch, CURLOPT_URL, $request_url);	
 			}
