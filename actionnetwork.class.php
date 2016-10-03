@@ -2,7 +2,7 @@
 
 /**
  * simple php SDK for Action Network API v2
- * verson 1.0 - December 2015
+ * verson 1.1 - September 2016
  * author: Jonathan Kissam, jonathankissam.com
  * API documentation: https://actionnetwork.org/docs
  */
