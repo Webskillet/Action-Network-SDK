@@ -1,7 +1,7 @@
 # Action Network SDK
 
 simple php SDK for Action Network API v. 2  
-Version 1.1, September 2016
+Version 1.2, October 2016
 
 author: [Jonathan Kissam](http://jonathankissam.com)
 
@@ -18,6 +18,16 @@ It was primarily developed for use in my [Action Network Wordpress plugin](https
 If you find this SDK useful, please consider supporting further development by [hiring me or making a donation](http://jonathankissam.com/support).
 
 Please [contact me](http://jonathankissam.com/about#contact) with bug reports, feedback, thoughts or feature requests.
+
+## Updates
+
+_October 6, 2016:_
+
+1. Updated to address the fact that Action Network's API removed the *total_pages* field from the "people" collection on 9/2/2016. __getFullSimpleCollection__ and __traverseFullCollection__ should now work with the "people" endpoint, although that is probably not a good practice, for the same reason that Action Network removed the field from the collection (i.e., for any large collection, it is probably better to use __traverseCollection__ with the new __getNextpage__ method in a batching function, to prevent php timeouts).
+
+2. Added __getNextPage__ method, to return the _links->next->href property from a collection (to aid in traversing collections which return multiple pages).
+
+3. Modified the __getResourceTitle__ method to return the email address for the "people" collection, since a "person" resource has neither "title" nor "name," and the email address is unique, required, and more important than the actual name.
 
 ## ActionNetwork class
 
