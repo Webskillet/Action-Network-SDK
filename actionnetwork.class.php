@@ -27,6 +27,7 @@ class ActionNetwork {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 100);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 		if ($method == "POST") {
 			curl_setopt($ch, CURLOPT_POST, 1);
 			if ($object) {
