@@ -12,11 +12,17 @@ class ActionNetwork {
 	private $api_key = 'PASS_API_KEY_WHEN_INSTANTIATING_CLASS';
 	private $api_version = '2';
 	private $api_base_url = 'https://actionnetwork.org/api/v2/';
+	private $http_timeout = 20;
 
-	public function __construct($api_key = null) {
+	public function __construct($api_key = null, $opts = []) {
 		if(!extension_loaded('curl')) trigger_error('ActionNetwork requires PHP cURL', E_USER_ERROR);
 		if(is_null($api_key)) trigger_error('api key must be supplied', E_USER_ERROR);
 		$this->api_key = $api_key;
+		if (is_array($opts)) {
+			if (isset($opts['http_timeout']) && is_integer($opts['http_timeout'])) {
+				$this->http_timeout = $opts['http_timeout'];
+			}
+		}
 	}
 
 	public function call($endpoint, $method = 'GET', $object = null) {
@@ -26,7 +32,7 @@ class ActionNetwork {
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 100);
+		curl_setopt($ch, CURLOPT_TIMEOUT, $this->http_timeout);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 		if ($method == "POST") {
 			curl_setopt($ch, CURLOPT_POST, 1);
