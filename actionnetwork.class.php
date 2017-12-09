@@ -14,6 +14,10 @@ class ActionNetwork {
 	private $api_base_url = 'https://actionnetwork.org/api/v2/';
 	private $http_timeout = 20;
 
+	private $last_error = '';
+	private $last_request = array();
+	private $last_response = array();
+
 	public function __construct($api_key = null, $opts = []) {
 		if(!extension_loaded('curl')) trigger_error('ActionNetwork requires PHP cURL', E_USER_ERROR);
 		if(is_null($api_key)) trigger_error('api key must be supplied', E_USER_ERROR);
@@ -26,9 +30,11 @@ class ActionNetwork {
 	}
 
 	public function call($endpoint, $method = 'GET', $object = null) {
-		
+
 		// if endpoint is passed as an absolute URL (i.e., if it came from an API response), remove the base URL
 		$endpoint = str_replace($this->api_base_url,'',$endpoint);
+		$url = $this->api_base_url.$endpoint;
+		$headers = [];
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -50,11 +56,58 @@ class ActionNetwork {
 		}
 		curl_setopt($ch, CURLOPT_URL, $this->api_base_url.$endpoint);
 
-		$response = curl_exec($ch);
+		$this->last_request = array(
+			'method' => $method == "POST" ? "POST" : "GET",
+			'url'     => $url,
+			'body'    => $json,
+			'timeout' => $this->http_timeout,
+			// 'path'    => $method,
+			// 'headers' => array()
+		);
 
+		$response = curl_exec($ch);
+		$this->last_response = array(
+			'headers' => curl_getinfo($ch),
+			'httpHeaders' => '',
+			'body' => $response
+		);
+
+		$this->last_error = curl_error($ch);
+		if ($this->last_error) {
+			$this->last_error = "curl error: " . $this->last_error;
+		}
 		curl_close($ch);
 
-		return json_decode($response);
+		if (! $response) {
+			return NULL;
+		}
+
+		$decoded = json_decode($response);
+
+		if (! $decoded) {
+			$this->last_error = "json error: " . json_last_error_msg();
+			return NULL;
+		}
+
+		if (isset($decoded->error)) {
+			$this->last_error = "AN error: " . (string)$decoded->error;
+			// but still return this possible API-level error as the response (valid from HTTP PoV)
+		}
+
+		return $decoded;
+	}
+
+	// method, url, body, timeout
+	public function getLastRequest() {
+		return $this->last_request;
+	}
+
+	public function getLastResponse() {
+		return $this->last_response;
+	}
+
+	public function getLastError() {
+		return $this->last_error;
 	}
 
 	// helper functions for collections
@@ -75,11 +128,11 @@ class ActionNetwork {
 			}
 		}
 	}
-	
+
 	public function getNextPage($response) {
 		return isset($response->_links) && isset($response->_links->next) && isset($response->_links->next->href) ? $response->_links->next->href : false;
 	}
-	
+
 	// get embed codes
 	public function getEmbedCodes($resource, $array = false) {
 		$embed_endpoint = isset($resource->_links->{'action_network:embed'}->href) ? $resource->_links->{'action_network:embed'}->href : '';
